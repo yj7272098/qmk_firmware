@@ -1,35 +1,39 @@
+/* Copyright 2020 Play Keyboard 
+  * 
+  * This program is free software: you can redistribute it and/or modify 
+  * it under the terms of the GNU General Public License as published by 
+  * the Free Software Foundation, either version 2 of the License, or 
+  * (at your option) any later version. 
+  * 
+  * This program is distributed in the hope that it will be useful, 
+  * but WITHOUT ANY WARRANTY; without even the implied warranty of 
+  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+  * GNU General Public License for more details. 
+  * 
+  * You should have received a copy of the GNU General Public License 
+  * along with this program.  If not, see <http://www.gnu.org/licenses/>. 
+  */
+
 #include "pk60v3.h"
 #include "led.h"
 
 void matrix_init_kb (void) {
-
-  matrix_init_user();
-  led_init_ports();
-
+    matrix_init_user();
+    led_init_ports();
 }
-
-void matrix_scan_kb(void) {
-
-  matrix_scan_user();
-
-};
-
 void led_init_ports(void) {
-  // Set capslock LED pin as pinout
-  DDRF |= (1 << 4);
-  PORTF |= (1 << 4);
-
+    setPinOutput(F4);
+    writePinHight(F4);
 }
-
-void led_set_kb(uint8_t usb_led) {
-    
-  if (usb_led & (1<<USB_LED_CAPS_LOCK)) {
-      // Turn capslock on
-      PORTF &= ~(1 << 4);
-  } else {
-      // Turn capslock off
-      PORTF |= (1 << 4);
-  }
-  led_set_user(usb_led);
-
+bool led_update_kb(led_t led_state) {
+    bool res = led_update_user(led_state);
+    if(res) {
+        // writePin sets the pin high for 1 and low for 0.
+        // In this example the pins are inverted, setting
+        // it low/0 turns it on, and high/1 turns the LED off.
+        // This behavior depends on whether the LED is between the pin
+        // and VCC or the pin and GND.
+        writePin(F4, !led_state.caps_lock);
+    }
+    return res;
 }
