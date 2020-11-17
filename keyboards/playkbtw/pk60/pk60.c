@@ -23,7 +23,7 @@ void matrix_init_kb (void) {
 }
 void led_init_ports(void) {
     setPinOutput(F4);
-    writePinHight(F4);
+    writePinHigh(F4);
 }
 bool led_update_kb(led_t led_state) {
     bool res = led_update_user(led_state);
